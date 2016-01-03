@@ -29,7 +29,7 @@ void draw() {
   ninja.draw();
 
   // floor
-  fill(100,0,0);
+  fill(255);
   box(1000, 0, 1000);
   
   noLights();
