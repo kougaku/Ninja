@@ -22,7 +22,6 @@ void draw() {
 
   // light 
   lights();
-  ambientLight(255, 255, 255);
   noStroke();
   
   // ninja
