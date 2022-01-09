@@ -1,4 +1,3 @@
-import saito.objloader.*;
 
 class Ninja {
 
@@ -17,31 +16,36 @@ class Ninja {
   private final float READ_MODEL_SCALE = 100;
   private final int FRAME_WAITING_1 = 0;
   private final int FRAME_WAITING_2 = 6;
-  
+
   // animation
-  private ArrayList<OBJModel> models = new ArrayList<OBJModel>();
+  private ArrayList<PShape> models = new ArrayList<PShape>();
   private float time = 0;
   private int frame = 0;
-  
+
   // constructor
   public Ninja (PApplet app) {
+    app.print("Now loading Ninja: ");
     for ( int i=0; i<12; i++) {
-      OBJModel model = new OBJModel(app, "ninja_walk_"+i+".obj", "relative", TRIANGLES);
+      PShape model = app.loadShape("ninja_walk_"+i+".obj");
       model.scale(READ_MODEL_SCALE);
       models.add(model);
+      app.print("*");
     }
+    app.println(" [done]");
   }
 
   // draw (with update)
   public void draw() {
     update();
-    
+
     pushStyle();
     pushMatrix();
     translate( pos.x, pos.y, pos.z );
     rotateY(angleY);
     noStroke();
-    models.get(frame).draw();
+    rotateX(PI);
+    rotateY(PI);
+    shape(models.get(frame));
     popMatrix();
     popStyle();
   }
@@ -55,12 +59,12 @@ class Ninja {
       frame = ((int)time) % models.size();
       time += animation_speed;
     }
-    
+
     // update ninja position
     if ( isWalking || isMoving ) {
       pos.x += walking_speed * sin(angleY);
       pos.z += walking_speed * cos(angleY);
-      
+
       if ( isMoving && dist(pos.x, pos.z, pos_dst.x, pos_dst.z) <= walking_speed ) {
         pos.x = pos_dst.x;
         pos.z = pos_dst.z;
@@ -86,10 +90,10 @@ class Ninja {
     isWalking = false;
     isRotating = false;
   }
-  
+
   // look at specified position
   public void lookAt(PVector point) {
-    angleY = atan2( point.x-pos.x, point.z-pos.z );    
+    angleY = atan2( point.x-pos.x, point.z-pos.z );
   }
 
   // begin waling to the destination
@@ -104,7 +108,7 @@ class Ninja {
   public void setPosition(PVector _pos) {
     pos = new PVector(_pos.x, _pos.y, _pos.z);
   }
-  
+
   // get position of the ninja
   public PVector getPosition() {
     return new PVector(pos.x, pos.y, pos.z);
@@ -117,9 +121,8 @@ class Ninja {
 
   // change scale of the model
   public void scale(float scale_factor) {
-    for ( OBJModel model : models ) {
+    for ( PShape model : models ) {
       model.scale(scale_factor);  // mult with current sacle factor
     }
   }
 }
-
